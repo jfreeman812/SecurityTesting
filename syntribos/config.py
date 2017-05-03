@@ -22,6 +22,7 @@ from syntribos._i18n import _, _LE, _LW   # noqa
 from syntribos.utils.file_utils import ContentType
 from syntribos.utils.file_utils import ExistingDirType
 
+
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 OPTS_REGISTERED = False
@@ -217,6 +218,10 @@ def list_syntribos_opts():
                     "The root directory where the subfolders that make up"
                     " syntribos' environment (logs, templates, payloads, "
                     "configuration files, etc.)")),
+        cfg.StrOpt("meta_vars", sample_default="/path/to/meta.json",
+                   help=_(
+                       "The path to a meta variable definitions file, which "
+                       "will be used when parsing your templates")),
     ]
 
 
@@ -229,6 +234,8 @@ def list_user_opts():
         cfg.StrOpt("password", default="",
                    help=_("keystone user password"),
                    secret=True),
+        cfg.StrOpt("apikey", default="",
+                   help=_("identity API key")),
         cfg.StrOpt("user_id", default="",
                    help=_("Keystone user ID"), secret=True),
         cfg.StrOpt("token", default="", help=_("keystone auth token"),

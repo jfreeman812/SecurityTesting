@@ -1,0 +1,4 @@
+GET /v1/accounts/{|ran|}/methods​?limit=integer&​marker=integer&​showDisabled=boolean HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|

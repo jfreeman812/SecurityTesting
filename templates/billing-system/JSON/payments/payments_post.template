@@ -1,0 +1,48 @@
+POST /v1/accounts/{|ran|}/payments HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "papi:payment": {
+    "levelThreeOrderInformation": {
+      "taxAmount": "12345",
+      "taxIndicator": "1",
+      "orderNumber": "12345",
+      "dutyAmount": "000",
+      "freightAmount": "000",
+      "destinationCountryCode": "USA",
+      "orderItems": [
+        {
+          "total": "100",
+          "index": 1,
+          "taxRate": "000",
+          "productCode": "SERVICE",
+          "grossNetIndicator": "Y",
+          "discountIndicator": "N",
+          "tax": "12345",
+          "unitCost": "10000",
+          "description": "BILL NUMBER IS B1-123",
+          "quantity": 10000,
+          "unitOfMeasure": "MONTH",
+          "commodityCode": "81110000"
+        }
+      ],
+      "shipFromZip": "22222",
+      "discountAmount": "000",
+      "destinationZip": "11111"
+    },
+    "addressVerificationInformation": {
+      "postalCode": "78217",
+      "state": "TX",
+      "addressLine2": "Apt. 13",
+      "addressLine1": "1313 Basin Oak",
+      "country": "US",
+      "city": "San Antonio"
+    },
+    "submissionId": "urn:uuid:7dc53df5-703e-49b3-8670-b1c468f47f1f",
+    "amount": "4405",
+    "comments": "Monthly payment",
+    "methodID": "urn:uuid:|methodID|"
+  }
+}

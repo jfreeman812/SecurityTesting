@@ -1,0 +1,29 @@
+POST /v1/methodValidations HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "papi:methodValidation": {
+    "lineOfBusiness": "US_CLOUD",
+    "contractEntity": "CONTRACT_US",
+    "currencyCode": "USD",
+    "method": {
+      "paymentCard": {
+        "cardVerificationNumber": "222",
+        "expirationDate": "11/2011",
+        "cardHolderName": "Card Rich",
+        "addressVerificationInformation": {
+          "postalCode": "78217",
+          "state": "TX",
+          "addressLine2": "Apt. 13",
+          "addressLine1": "1313 Basin Oak",
+          "country": "US",
+          "city": "San Antonio"
+        },
+        "cardType": "VISA",
+        "cardNumber": "1234567891123456"
+      }
+    }
+  }
+}

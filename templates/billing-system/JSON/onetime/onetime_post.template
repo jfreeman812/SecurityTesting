@@ -1,0 +1,25 @@
+POST /v1/payments HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "papi:payment": {
+    "amount": "9950",
+    "method": {
+      "paymentCard": {
+        "cardVerificationNumber": "222",
+        "expirationDate": "11/2011",
+        "cardHolderName": "Card Rich",
+        "cardType": "VISA",
+        "cardNumber": "1234567891123456"
+      },
+      "gatewayContract": {
+        "currencyCode": "USD",
+        "lineOfBusiness": "US_CLOUD",
+        "contractEntity": "CONTRACT_US"
+      }
+    },
+    "comments": "One time payment"
+  }
+}

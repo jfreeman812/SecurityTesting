@@ -234,7 +234,7 @@ def list_user_opts():
         cfg.StrOpt("password", default="",
                    help=_("keystone user password"),
                    secret=True),
-        cfg.StrOpt("apikey", default="",
+        cfg.StrOpt("apiKey", default="",
                    help=_("identity API key")),
         cfg.StrOpt("user_id", default="",
                    help=_("Keystone user ID"), secret=True),

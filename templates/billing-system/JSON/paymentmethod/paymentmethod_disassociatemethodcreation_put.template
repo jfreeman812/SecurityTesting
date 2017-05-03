@@ -6,6 +6,6 @@ x-auth-token: |token|
 {
   "methodAssociation": {
     "ran": "|ran|",
-    "methodValidationId": "urn:uuid:|methodValidationID|"
+    "methodValidationId": "urn:uuid:|methodValidationId|"
   }
 }

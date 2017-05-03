@@ -1,4 +1,4 @@
-GET /v1/payments/{|paymentid|}/voids HTTP/1.1
+GET /v1/payments/{|paymentId|}/voids HTTP/1.1
 Accept: application/json
 content-type: application/json
 x-auth-token: |token|

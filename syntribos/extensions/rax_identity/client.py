@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 
-def authenticate(endpoint, username, apikey):
+def authenticate(endpoint, username, apiKey):
     headers = {'content-type': 'application/json'}
     if endpoint.endswith('/v2.0/'):
         endpoint = '{0}tokens'.format(endpoint)
@@ -36,7 +36,7 @@ def authenticate(endpoint, username, apikey):
     else:
         endpoint = '{0}/v2.0/tokens'.format(endpoint)
     data = {'auth': {"RAX-KSKEY:apiKeyCredentials": {"username": username,
-                                                     "apiKey": apikey}}}
+                                                     "apiKey": apiKey}}}
     data = json.dumps(data)
 
     try:
@@ -57,7 +57,7 @@ def authenticate_config(user_section):
     return authenticate(
         endpoint=CONF.get(user_section).endpoint or CONF.user.endpoint,
         username=CONF.get(user_section).username or CONF.user.username,
-        apikey=CONF.get(user_section).apikey or CONF.user.apikey)
+        apiKey=CONF.get(user_section).apiKey or CONF.user.apiKey)
 
 
 @memoize

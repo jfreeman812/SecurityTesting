@@ -5,6 +5,6 @@ x-auth-token: |token|
 
 {
   "defaultMethod": {
-    "methodID": "urn:uuid:|methodID|"
+    "methodId": "urn:uuid:|methodId|"
   }
 }

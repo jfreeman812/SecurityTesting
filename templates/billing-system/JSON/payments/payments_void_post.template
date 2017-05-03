@@ -1,0 +1,12 @@
+POST /v1/payments/{|paymentId|}/voids HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "papi:void": {
+    "voidAmount": "4405",
+    "comments": "Void of payment-1123",
+    "submissionId": "urn:uuid:7dc53df5-703e-49b3-8670-b1c468f47f1f"
+  }
+}

@@ -1,0 +1,4 @@
+{
+    "token": {"type":"function", "val":"syntribos.extensions.rax_identity.client:get_token"},
+    "ran": {"val":"020-1016870"}
+}

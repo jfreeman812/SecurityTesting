@@ -228,7 +228,7 @@ class BaseBillingSystemModel(object):
 
     @classmethod
     def _strip_urn_namespace(cls, text):
-        match = re.search(r'urn:uuid:(.*)')
+        match = re.search(r'urn:uuid:(.*)', text)
         return match.group(1)
 
 
@@ -242,6 +242,7 @@ class PaymentMethod(BaseBillingSystemModel):
                  isDefault=None,
                  modifiedDate=None,
                  methodClass=None,
+                 methodClassName=None,
                  addressVerificationInformation=None,
                  level3Eligible=None):
         super(PaymentMethod, self).__init__(locals())
@@ -270,11 +271,28 @@ class PaymentMethod(BaseBillingSystemModel):
                    isDefault=data.get('isDefault'),
                    modifiedDate=data.get('modifiedDate'),
                    methodClass=_model,
+                   methodClassName=_model_name,
                    addressVerificationInformation=_avi,
                    level3Eligible=data.get('level3Eligible'))
 
+    def _obj_to_dict(self):
+        if self.methodClassName == 'paymentCard':
+            _model_name = 'paymentCard'
+        elif self.methodClassName == 'electronicCheck':
+            _model_name = 'electronicCheck'
+        elif self.methodClassName == 'ukDirectDebit':
+            _model_name = 'ukDirectDebit'
+        elif self.methodClassName == 'sepa':
+            _model_name = 'sepa'
 
-class PaymentCardMethod(PaymentMethod):
+        dic = {}
+        dic['addressVerificationInformation'] = \
+            self.addressVerificationInformation
+        dic[_model_name] = self.methodClass._obj_to_dict()['papi:method']
+        return {"method": self._remove_empty_values(dic)}
+
+
+class PaymentCardMethod(BaseBillingSystemModel):
 
     def __init__(self,
                  cardVerificationNumber=None,
@@ -294,15 +312,15 @@ class PaymentCardMethod(PaymentMethod):
 
     def _obj_to_dict(self):
         dic = {}
-        dic['cardVerificationNumber'] = self.cardVerificationNumber
         dic['expirationDate'] = self.expirationDate
+        dic['cardVerificationNumber'] = self.cardVerificationNumber
         dic['cardHolderName'] = self.cardHolderName
         dic['cardType'] = self.cardType
         dic['cardNumber'] = self.cardNumber
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class ACHMethod(PaymentMethod):
+class ACHMethod(BaseBillingSystemModel):
 
     def __init__(self,
                  accountNumber=None,
@@ -330,7 +348,7 @@ class ACHMethod(PaymentMethod):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class UKDebitMethod(PaymentMethod):
+class UKDebitMethod(BaseBillingSystemModel):
 
     def __init__(self,
                  bankSortCode=None,
@@ -352,7 +370,7 @@ class UKDebitMethod(PaymentMethod):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class SEPAMethod(PaymentMethod):
+class SEPAMethod(BaseBillingSystemModel):
 
     def __init__(self,
                  bic=None,
@@ -400,12 +418,10 @@ class MethodValidation(BaseBillingSystemModel):
 
     def _obj_to_dict(self):
         dic = {}
-        dic['lineofBusiness'] = self.lineofBusiness
+        dic['lineOfBusiness'] = self.lineOfBusiness
         dic['contractEntity'] = self.contractEntity
         dic['currencyCode'] = self.currencyCode
-        dic['method'] = self.method._obj_to_dict()['papi:method']
-        _avi = self.method.addressVerificationInformation
-        dic['method']['addressVerificationInformation'] = _avi
+        dic['method'] = self.method._obj_to_dict()
         return {"papi:methodValidation": self._remove_empty_values(dic)}
 
 

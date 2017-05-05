@@ -61,6 +61,8 @@ user_group = cfg.OptGroup(name="user", title="Identity Config")
 test_group = cfg.OptGroup(name="test", title="Test Config")
 logger_group = cfg.OptGroup(name="logging", title="Logger config")
 remote_group = cfg.OptGroup(name="remote", title="Remote config")
+rax_billing_system_group = cfg.OptGroup(name='rax_billing_system',
+                                        title='Billing System API')
 
 
 def sub_commands(sub_parser):
@@ -141,7 +143,17 @@ def register_opts():
         # Remote options
         CONF.register_group(remote_group)
         CONF.register_opts(list_remote_opts(), group=remote_group)
+        # Billing System options
+        CONF.register_group(rax_billing_system_group)
+        CONF.register_opts(list_billing_system_opts(),
+                           group=rax_billing_system_group)
         OPTS_REGISTERED = True
+
+
+def list_billing_system_opts():
+    return [
+        cfg.StrOpt('ran', default='', help='Rackspace Account Number')
+    ]
 
 
 def list_cli_opts():

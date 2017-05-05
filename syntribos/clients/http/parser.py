@@ -325,11 +325,12 @@ class RequestCreator(object):
 
                 val = func(*args)
             except Exception:
-                msg = _("The reference to the function %s failed to parse "
-                        "correctly, please check the documentation to ensure "
-                        "your function import string adheres to the proper "
-                        "format") % string
-                raise TemplateParseException(msg)
+                raise
+                # msg = _("The reference to the function %s failed to parse "
+                #         "correctly, please check the documentation to ensure "
+                #         "your function import string adheres to the proper "
+                #         "format") % string
+                # raise TemplateParseException(msg)
 
         else:
             try:

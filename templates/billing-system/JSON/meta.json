@@ -2,5 +2,8 @@
     "token": {"type":"function", "val":"syntribos.extensions.rax_identity.client:get_token"},
     "ran": {"val":"020-1016870"},
     "methodId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_methodId"},
-    "methodValidationId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_methodValidationId"}
+    "methodValidationId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_methodValidationId"},
+    "paymentId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_paymentId"},
+    "voidId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_voidId"},
+    "refundId": {"type":"function", "val":"syntribos.extensions.rax_billing_system.client:get_one_refundId"}
 }

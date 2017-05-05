@@ -41,9 +41,9 @@ def list_paymentMethods():
         "/v1/accounts/%s/methods" % CONF.rax_billing_system.ran)
     resp, _ = SynHTTPClient().request(
         "GET", endpoint, headers=headers, sanitize=True)
-    methods = resp.json()['methods']['method']
+    _methods = resp.json()['methods']['method']
     paymentMethods = {}
-    for m in methods:
+    for m in _methods:
         m_id = _strip_urn_namespace(m['id'])
         paymentMethods[m_id] = models.PaymentMethod._dict_to_obj(m)
     return paymentMethods
@@ -107,3 +107,78 @@ def get_one_methodValidation():
     if not methodValidations:
         create_methodValidation()
     return methodValidations.items()[0][1]
+
+
+@memoize
+def list_payments():
+    headers = {'accept': 'application/json', 'x-auth-token': get_token(),
+               'content-type': 'application/json'}
+    endpoint = urlparse.urljoin(
+        CONF.syntribos.endpoint,
+        "/v1/accounts/%s/payments" % CONF.rax_billing_system.ran)
+    resp, _ = SynHTTPClient().request(
+        "GET", endpoint, headers=headers, sanitize=True)
+    _payments = resp.json()['payments']['payment']
+    payments = {}
+    for p in _payments:
+        p_id = _strip_urn_namespace(p['id'])
+        payments[p_id] = models.Payment._dict_to_obj(p)
+    return payments
+
+
+def get_one_paymentId():
+    return list_payments().items()[0][0]
+
+
+def get_one_payment():
+    return list_payments().items()[0][1]
+
+
+@memoize
+def list_voids():
+    headers = {'accept': 'application/json', 'x-auth-token': get_token(),
+               'content-type': 'application/json'}
+    endpoint = urlparse.urljoin(
+        CONF.syntribos.endpoint,
+        "/v1/payments/%s/voids" % get_one_paymentId())
+    resp, _ = SynHTTPClient().request(
+        "GET", endpoint, headers=headers, sanitize=True)
+    _voids = resp.json()['voids']['void']
+    voids = {}
+    for v in _voids:
+        v_id = _strip_urn_namespace(v['id'])
+        voids[v_id] = models.Void._dict_to_obj(v)
+    return voids
+
+
+def get_one_voidId():
+    return list_voids().items()[0][0]
+
+
+def get_one_void():
+    return list_voids().items()[0][1]
+
+
+@memoize
+def list_refunds():
+    headers = {'accept': 'application/json', 'x-auth-token': get_token(),
+               'content-type': 'application/json'}
+    endpoint = urlparse.urljoin(
+        CONF.syntribos.endpoint,
+        "/v1/accounts/%s/refunds" % CONF.rax_billing_system.ran)
+    resp, _ = SynHTTPClient().request(
+        "GET", endpoint, headers=headers, sanitize=True)
+    _refunds = resp.json()['refunds']['refund']
+    refunds = {}
+    for r in _refunds:
+        r_id = _strip_urn_namespace(r['id'])
+        refunds[r_id] = models.Refund._dict_to_obj(r)
+    return refunds
+
+
+def get_one_refundId():
+    return list_refunds().items()[0][0]
+
+
+def get_one_refund():
+    return list_refunds().items()[0][1]

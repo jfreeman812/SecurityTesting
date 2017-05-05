@@ -266,7 +266,9 @@ class RequestCreator(object):
                 data = ElementTree.fromstring(data)
             except Exception:
                 if not re.match(postdat_regex, data):
-                    raise TypeError(_("Unknown data format"))
+                    raise TypeError(_("Make sure that your request body has "
+                                      "valid JSON or XML - be sure to check"
+                                      "for typos."))
         except Exception:
             raise
         return data

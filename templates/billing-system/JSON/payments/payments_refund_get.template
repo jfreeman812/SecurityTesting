@@ -1,4 +1,4 @@
-GET /v1/refunds/{|refundID|} HTTP/1.1
+GET /v1/refunds/{|refundId|} HTTP/1.1
 Accept: application/json
 content-type: application/json
 x-auth-token: |token|

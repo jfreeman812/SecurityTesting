@@ -1,0 +1,45 @@
+POST /v1/accounts/{|ran|}/payments HTTP/1.1
+Accept: application/xml
+content-type: application/xml
+x-auth-token: |token|
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:payment xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ns2="http://payment.api.rackspacecloud.com/v1">
+     <amount>4405</amount>
+     <comments>Monthly payment</comments>
+     <submissionId>urn:uuid:7dc53df5-703e-49b3-8670-b1c468f47f1f</submissionId>
+     <addressVerificationInformation>
+          <addressLine1>1313 Basin Oak</addressLine1>
+          <addressLine2>Apt. 13</addressLine2>
+          <city>San Antonio</city>
+          <state>TX</state>
+          <country>US</country>
+          <postalCode>78217</postalCode>
+     </addressVerificationInformation>
+     <methodId>|methodId|</methodId>
+     <levelThreeOrderInformation>
+          <orderNumber>12345</orderNumber>
+          <discountAmount>000</discountAmount>
+          <shipFromZip>22222</shipFromZip>
+          <destinationZip>11111</destinationZip>
+          <taxAmount>12345</taxAmount>
+          <taxIndicator>1</taxIndicator>
+          <freightAmount>000</freightAmount>
+          <dutyAmount>000</dutyAmount>
+          <destinationCountryCode>USA</destinationCountryCode>
+          <orderItems>
+               <index>1</index>
+               <description>BILL NUMBER IS B1-123</description>
+               <productCode>SERVICE</productCode>
+               <quantity>10000</quantity>
+               <unitCost>10000</unitCost>
+               <unitOfMeasure>MONTH</unitOfMeasure>
+               <total>100</total>
+               <tax>12345</tax>
+               <taxRate>000</taxRate>
+               <commodityCode>81110000</commodityCode>
+               <grossNetIndicator>Y</grossNetIndicator>
+               <discountIndicator>N</discountIndicator>
+          </orderItems>
+     </levelThreeOrderInformation>
+</ns2:payment>

@@ -1,0 +1,10 @@
+PUT /v1/accounts/{|ran|}/flags HTTP/1.1
+Accept: application/xml
+content-type: application/xml
+x-auth-token: |token|
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:flags xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ns2="http://payment.api.rackspacecloud.com/v1">
+     <active>true</active>
+     <subordinate>true</subordinate>
+</ns2:flags>

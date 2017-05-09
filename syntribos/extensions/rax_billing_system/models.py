@@ -226,11 +226,6 @@ class BaseBillingSystemModel(object):
             else:
                 return ET.Element(None)
 
-    @classmethod
-    def _strip_urn_namespace(cls, text):
-        match = re.search(r'urn:uuid:(.*)', text)
-        return match.group(1)
-
 
 class PaymentMethod(BaseBillingSystemModel):
 
@@ -407,7 +402,7 @@ class MethodValidation(BaseBillingSystemModel):
 
     @classmethod
     def _dict_to_obj(cls, data):
-        return cls(methodValidationId=cls._strip_urn_namespace(data.get('id')),
+        return cls(methodValidationId=data.get('id'),
                    validationResults=data.get('validationResults'),
                    lineOfBusiness=data.get('lineOfBusiness'),
                    gatewayMessage=data.get('gatewayMessage'),
@@ -440,7 +435,7 @@ class MethodAssociation(BaseBillingSystemModel):
 
     def _obj_to_dict(self):
         dic = {}
-        dic['methodValidationId'] = "urn:uuid:" + self.methodValidationId
+        dic['methodValidationId'] = self.methodValidationId
         dic.ran = self.ran
         return {"methodAssociation": self._remove_empty_values(dic)}
 
@@ -463,8 +458,8 @@ class Payment(BaseBillingSystemModel):
     def _dict_to_obj(cls, data):
         _ltoi = data.get('levelThreeOrderInformation')
         _avi = data.get('addressVerification')
-        _subid = cls._strip_urn_namespace(data.get('submissionId'))
-        _methid = cls._strip_urn_namespace(data.get('methodId'))
+        _subid = data.get('submissionId')
+        _methid = data.get('methodId')
         _gtr = data.get('gatewayTransactionReference')
         return cls(levelThreeOrderInformation=_ltoi,
                    addressVerificationInformation=_avi,
@@ -481,10 +476,10 @@ class Payment(BaseBillingSystemModel):
         dic['levelThreeOrderInformation'] = self.levelThreeOrderInformation
         dic['addressVerificationInformation'] = \
             self.addressVerificationInformation
-        dic['submissionId'] = "urn:uuid:" + self.submissionId
+        dic['submissionId'] = self.submissionId
         dic['amount'] = self.amount,
         dic['comments'] = self.comments,
-        dic['methodId'] = "urn:uuid:" + self.methodId
+        dic['methodId'] = self.methodId
         return {'papi:payment': self._remove_empty_values(dic)}
 
 
@@ -503,7 +498,7 @@ class Void(BaseBillingSystemModel):
 
     @classmethod
     def _dict_to_obj(cls, data):
-        _subid = cls._strip_urn_namespace(data.get('submissionId'))
+        _subid = data.get('submissionId')
         _gtr = data.get('gatewayTransactionReference')
         return cls(voidId=data.get('id'),
                    status=data.get('status'),
@@ -518,7 +513,7 @@ class Void(BaseBillingSystemModel):
         dic = {}
         dic['voidAmount'] = self.voidAmount
         dic['comments'] = self.comments
-        dic['submissionId'] = "urn:uuid:" + self.submissionId
+        dic['submissionId'] = self.submissionId
         return {'papi:void': self._remove_empty_values(dic)}
 
 
@@ -555,5 +550,5 @@ class Refund(BaseBillingSystemModel):
         dic = {}
         dic['refundAmount'] = self.refundAmount
         dic['comments'] = self.comments,
-        dic['submissionId'] = "urn:uuid:" + self.submissionId
+        dic['submissionId'] = self.submissionId
         return {'papi:refund': self._remove_empty_values(dic)}

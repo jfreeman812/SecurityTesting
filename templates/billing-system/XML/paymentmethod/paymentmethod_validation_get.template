@@ -1,0 +1,3 @@
+GET /v1/methodValidations/{|methodValidationId|} HTTP/1.1
+Accept: application/xml
+x-auth-token: |token|

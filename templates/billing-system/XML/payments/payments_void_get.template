@@ -1,0 +1,4 @@
+GET /v1/voids/{|voidId|} HTTP/1.1
+Accept: application/xml
+content-type: application/xml
+x-auth-token: |token|

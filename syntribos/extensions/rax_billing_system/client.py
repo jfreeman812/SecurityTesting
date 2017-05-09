@@ -27,14 +27,8 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 
-def _strip_urn_namespace(text):
-    match = re.search(r'urn:uuid:(.*)', text)
-    return match.group(1)
-
-
 @memoize
 def list_paymentMethods():
-    # headers = {'x-auth-token': get_token()}
     headers = {'accept': 'application/json', 'x-auth-token': get_token()}
     endpoint = urlparse.urljoin(
         CONF.syntribos.endpoint,
@@ -44,8 +38,7 @@ def list_paymentMethods():
     _methods = resp.json()['methods']['method']
     paymentMethods = {}
     for m in _methods:
-        m_id = _strip_urn_namespace(m['id'])
-        paymentMethods[m_id] = models.PaymentMethod._dict_to_obj(m)
+        paymentMethods[m['id']] = models.PaymentMethod._dict_to_obj(m)
     return paymentMethods
 
 
@@ -55,6 +48,18 @@ def get_one_methodId():
 
 def get_one_method():
     return list_paymentMethods().items()[0][1]
+
+
+def get_paymentmethod(methodId):
+    headers = {'accept': 'application/json', 'x-auth-token': get_token()}
+    endpoint = urlparse.urljoin(
+        CONF.syntribos.endpoint,
+        "/v1/accounts/{0}/methods/{1}".format(CONF.rax_billing_system.ran,
+                                              methodId))
+    resp, _ = SynHTTPClient().request(
+        "GET", endpoint, headers=headers, sanitize=True)
+    m = models.PaymentMethod._dict_to_obj(resp.json())
+    return m
 
 
 methodValidations = {}
@@ -121,8 +126,7 @@ def list_payments():
     _payments = resp.json()['payments']['payment']
     payments = {}
     for p in _payments:
-        p_id = _strip_urn_namespace(p['id'])
-        payments[p_id] = models.Payment._dict_to_obj(p)
+        payments[p['id']] = models.Payment._dict_to_obj(p)
     return payments
 
 
@@ -146,8 +150,7 @@ def list_voids():
     _voids = resp.json()['voids']['void']
     voids = {}
     for v in _voids:
-        v_id = _strip_urn_namespace(v['id'])
-        voids[v_id] = models.Void._dict_to_obj(v)
+        voids[v['id']] = models.Void._dict_to_obj(v)
     return voids
 
 
@@ -171,8 +174,7 @@ def list_refunds():
     _refunds = resp.json()['refunds']['refund']
     refunds = {}
     for r in _refunds:
-        r_id = _strip_urn_namespace(r['id'])
-        refunds[r_id] = models.Refund._dict_to_obj(r)
+        refunds[r['id']] = models.Refund._dict_to_obj(r)
     return refunds
 
 

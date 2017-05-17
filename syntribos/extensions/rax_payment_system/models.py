@@ -13,8 +13,8 @@
 # limitations under the License.
 import json
 import logging
-import re
 import xml.etree.ElementTree as ET
+import xmltodict
 
 from oslo_config import cfg
 
@@ -23,10 +23,17 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 
-class BaseBillingSystemModel(object):
+XMLNS_ATOM = "http://www.w3.org/2005/Atom"
+XMLNS_NS1 = "http://payment.api.rackspacecloud.com/v1"
+XMLNS_NS2 = "http://payment.api.rackspacecloud.com/v1"
+XMLNS_NS4 = "http://common.api.rackspacecloud.com/service-profile/v1.0"
+XMLNS_NS5 = "http://docs.openstack.org/common/api/v1.0"
+
+
+class BasePaymentSystemModel(object):
 
     def __init__(self, kwargs):
-        super(BaseBillingSystemModel, self).__init__()
+        super(BasePaymentSystemModel, self).__init__()
         self._log = logging.getLogger(__name__)
         for k, v in kwargs.items():
             if k != "self" and not k.startswith("_"):
@@ -61,29 +68,12 @@ class BaseBillingSystemModel(object):
                         encoding='UTF-8', errors='ignore')))
 
     @classmethod
-    def _remove_xml_namespaces(cls, element):
-        """Prunes namespaces from XML element
-
-        :param element: element to be trimmed
-        :returns: element with namespaces trimmed
-        :rtype: :class:`xml.etree.ElementTree.Element`
-        """
-        for key, value in vars(cls._namespaces).items():
-            if key.startswith("__"):
-                continue
-            element = cls._remove_xml_etree_namespace(element, value)
-        return element
-
-    @classmethod
-    def _json_to_obj(cls, serialized_str):
-        data_dict = json.loads(serialized_str, strict=False)
+    def _json_to_obj(cls, data_dict):
         return cls._dict_to_obj(data_dict)
 
     @classmethod
-    def _xml_to_obj(cls, serialized_str, encoding="iso-8859-2"):
-        parser = ET.XMLParser(encoding=encoding)
-        element = ET.fromstring(serialized_str, parser=parser)
-        return cls._xml_ele_to_obj(cls._remove_xml_namespaces(element))
+    def _xml_to_obj(cls, element):
+        return cls._xml_ele_to_obj(element)
 
     def _obj_to_json(self):
         return json.dumps(self._obj_to_dict())
@@ -227,7 +217,7 @@ class BaseBillingSystemModel(object):
                 return ET.Element(None)
 
 
-class PaymentMethod(BaseBillingSystemModel):
+class PaymentMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  methodId=None,
@@ -259,12 +249,14 @@ class PaymentMethod(BaseBillingSystemModel):
 
         _model = _model_class(data.get(_model_name))
         _avi = data.get('addressVerificationInformation')
-        return cls(methodId=cls._strip_urn_namespace(data.get('id')),
-                   creationDate=data.get('creationDate'),
-                   ran=data.get('ran'),
-                   status=data.get('status'),
-                   isDefault=data.get('isDefault'),
-                   modifiedDate=data.get('modifiedDate'),
+        return cls(methodId=data.get('id') or data.get("@id"),
+                   creationDate=data.get('creationDate') or
+                   data.get('@creationDate'),
+                   ran=data.get('ran') or data.get('@ran'),
+                   status=data.get('status') or data.get('@status'),
+                   isDefault=data.get('isDefault') or data.get('@isDefault'),
+                   modifiedDate=data.get('modifiedDate') or
+                   data.get('@modifiedDate'),
                    methodClass=_model,
                    methodClassName=_model_name,
                    addressVerificationInformation=_avi,
@@ -287,7 +279,7 @@ class PaymentMethod(BaseBillingSystemModel):
         return {"method": self._remove_empty_values(dic)}
 
 
-class PaymentCardMethod(BaseBillingSystemModel):
+class PaymentCardMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  cardVerificationNumber=None,
@@ -312,10 +304,17 @@ class PaymentCardMethod(BaseBillingSystemModel):
         dic['cardHolderName'] = self.cardHolderName
         dic['cardType'] = self.cardType
         dic['cardNumber'] = self.cardNumber
-        return {"papi:method": self._remove_empty_values(dic)}
+        return {"papi:method": {"PaymentCard": self._remove_empty_values(dic)}}
+
+    def _obj_to_xml(self):
+        dic = {'ns2:method': {}}
+        dic['ns2:method'] = self._obj_to_dict()['papi:method']
+        dic['ns2:method']['@xmlns:atom'] = XMLNS_ATOM
+        dic['ns2:method']['@xmlns:ns2'] = XMLNS_NS2
+        return xmltodict.unparse(dic)
 
 
-class ACHMethod(BaseBillingSystemModel):
+class ACHMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  accountNumber=None,
@@ -340,10 +339,18 @@ class ACHMethod(BaseBillingSystemModel):
         dic['achPaymentType'] = self.achPaymentType
         dic['routingNumber'] = self.routingNumber
         dic['accountHolderName'] = self.accountHolderName
-        return {"papi:method": self._remove_empty_values(dic)}
+        return {"papi:method": {
+            'electronicCheck': self._remove_empty_values(dic)}}
+
+    def _obj_to_xml(self):
+        dic = {'ns2:method': {}}
+        dic['ns2:method'] = self._obj_to_dict()['papi:method']
+        dic['ns2:method']['@xmlns:atom'] = XMLNS_ATOM
+        dic['ns2:method']['@xmlns:ns2'] = XMLNS_NS2
+        return xmltodict.unparse(dic)
 
 
-class UKDebitMethod(BaseBillingSystemModel):
+class UKDebitMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  bankSortCode=None,
@@ -362,10 +369,18 @@ class UKDebitMethod(BaseBillingSystemModel):
         dic['bankSortCode'] = self.bankSortCode
         dic['bankNumber'] = self.bankNumber
         dic['accountHolderName'] = self.accountHolderName
-        return {"papi:method": self._remove_empty_values(dic)}
+        return {"papi:method": {
+            "ukDirectDebit": self._remove_empty_values(dic)}}
+
+    def _obj_to_xml(self):
+        dic = {'ns2:method': {}}
+        dic['ns2:method'] = self._obj_to_dict()['papi:method']
+        dic['ns2:method']['@xmlns:atom'] = XMLNS_ATOM
+        dic['ns2:method']['@xmlns:ns2'] = XMLNS_NS2
+        return xmltodict.unparse(dic)
 
 
-class SEPAMethod(BaseBillingSystemModel):
+class SEPAMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  bic=None,
@@ -384,10 +399,17 @@ class SEPAMethod(BaseBillingSystemModel):
         dic['bic'] = self.bic
         dic['iban'] = self.iban
         dic['accountHolderName'] = self.accountHolderName
-        return {"papi:method": self._remove_empty_values(dic)}
+        return {"papi:method": {"sepa": self._remove_empty_values(dic)}}
+
+    def _obj_to_xml(self):
+        dic = {'ns2:method': {}}
+        dic['ns2:method'] = self._obj_to_dict()['papi:method']
+        dic['ns2:method']['@xmlns:atom'] = XMLNS_ATOM
+        dic['ns2:method']['@xmlns:ns2'] = XMLNS_NS2
+        return xmltodict.unparse(dic)
 
 
-class MethodValidation(BaseBillingSystemModel):
+class MethodValidation(BasePaymentSystemModel):
 
     def __init__(self,
                  methodValidationId=None,
@@ -416,11 +438,22 @@ class MethodValidation(BaseBillingSystemModel):
         dic['lineOfBusiness'] = self.lineOfBusiness
         dic['contractEntity'] = self.contractEntity
         dic['currencyCode'] = self.currencyCode
-        dic['method'] = self.method._obj_to_dict()
+        dic['method'] = self.method._obj_to_dict()['papi:method']
         return {"papi:methodValidation": self._remove_empty_values(dic)}
 
+    def _obj_to_xml(self):
+        dic = {'ns3:methodValidation': {}}
+        dic['ns3:methodValidation'] = \
+            self._obj_to_dict()['papi:methodValidation']
+        dic['ns3:methodValidation']['@xmlns:ns2'] = XMLNS_ATOM
+        dic['ns3:methodValidation']['@xmlns:ns3'] = XMLNS_NS2
+        dic['ns3:methodValidation']['@xmlns:ns4'] = XMLNS_NS4
+        dic['ns3:methodValidation']['@xmlns:ns5'] = XMLNS_NS5
 
-class MethodAssociation(BaseBillingSystemModel):
+        return xmltodict.unparse(dic)
+
+
+class MethodAssociation(BasePaymentSystemModel):
     def __init__(self,
                  methodValidationId=None,
                  methodId=None,
@@ -440,9 +473,10 @@ class MethodAssociation(BaseBillingSystemModel):
         return {"methodAssociation": self._remove_empty_values(dic)}
 
 
-class Payment(BaseBillingSystemModel):
+class Payment(BasePaymentSystemModel):
 
     def __init__(self,
+                 paymentId=None,
                  levelThreeOrderInformation=None,
                  addressVerificationInformation=None,
                  submissionDate=None,
@@ -461,7 +495,8 @@ class Payment(BaseBillingSystemModel):
         _subid = data.get('submissionId')
         _methid = data.get('methodId')
         _gtr = data.get('gatewayTransactionReference')
-        return cls(levelThreeOrderInformation=_ltoi,
+        return cls(paymentId=data.get('id') or data.get('@id'),
+                   levelThreeOrderInformation=_ltoi,
                    addressVerificationInformation=_avi,
                    submissionDate=data.get('submissionDate'),
                    submissionId=_subid,
@@ -482,8 +517,15 @@ class Payment(BaseBillingSystemModel):
         dic['methodId'] = self.methodId
         return {'papi:payment': self._remove_empty_values(dic)}
 
+    def _obj_to_xml(self):
+        dic = {'ns2:payment': {}}
+        dic['ns2:payment'] = self._obj_to_dict['papi:payment']
+        dic['ns2:payment']['@xmlns:atom'] = XMLNS_ATOM
+        dic['ns2:payment']['@xmlns:ns2'] = XMLNS_NS2
+        return xmltodict.unparse(dic)
 
-class Void(BaseBillingSystemModel):
+
+class Void(BasePaymentSystemModel):
 
     def __init__(self,
                  voidId=None,
@@ -500,7 +542,7 @@ class Void(BaseBillingSystemModel):
     def _dict_to_obj(cls, data):
         _subid = data.get('submissionId')
         _gtr = data.get('gatewayTransactionReference')
-        return cls(voidId=data.get('id'),
+        return cls(voidId=data.get('id') or data.get('@id'),
                    status=data.get('status'),
                    gatewayTransactionReference=_gtr,
                    gatewayMessage=data.get('gatewayMessage'),
@@ -516,8 +558,19 @@ class Void(BaseBillingSystemModel):
         dic['submissionId'] = self.submissionId
         return {'papi:void': self._remove_empty_values(dic)}
 
+    def _obj_to_xml(self):
+        dic = {'ns3:void': {}}
+        dic['ns3:void'] = \
+            self._obj_to_dict()['papi:void']
+        dic['ns3:void']['@xmlns:ns2'] = XMLNS_ATOM
+        dic['ns3:void']['@xmlns:ns3'] = XMLNS_NS2
+        dic['ns3:void']['@xmlns:ns4'] = XMLNS_NS4
+        dic['ns3:void']['@xmlns:ns5'] = XMLNS_NS5
 
-class Refund(BaseBillingSystemModel):
+        return xmltodict.unparse(dic)
+
+
+class Refund(BasePaymentSystemModel):
 
     def __init__(self,
                  refundId=None,
@@ -533,9 +586,9 @@ class Refund(BaseBillingSystemModel):
 
     @classmethod
     def _dict_to_obj(cls, data):
-        _subid = cls._strip_urn_namespace(data.get('submissionId'))
+        _subid = data.get('submissionId')
         _gtr = data.get('gatewayTransactionReference')
-        _methid = cls._strip_urn_namespace(data.get('methodId'))
+        _methid = data.get('methodId')
         return cls(refundId=data.get('id'),
                    refundAmount=data.get('refundAmount'),
                    comments=data.get('comments'),
@@ -552,3 +605,12 @@ class Refund(BaseBillingSystemModel):
         dic['comments'] = self.comments,
         dic['submissionId'] = self.submissionId
         return {'papi:refund': self._remove_empty_values(dic)}
+
+    def _obj_to_xml(self):
+        dic = {'ns3:refund': {}}
+        dic['ns3:refund'] = \
+            self._obj_to_dict()['papi:refund']
+        dic['ns3:refund']['@xmlns:ns2'] = XMLNS_ATOM
+        dic['ns3:refund']['@xmlns:ns3'] = XMLNS_NS2
+        dic['ns3:refund']['@xmlns:ns4'] = XMLNS_NS4
+        dic['ns3:refund']['@xmlns:ns5'] = XMLNS_NS5

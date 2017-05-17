@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import re
 import urlparse
+import xml.etree.ElementTree as ET
 
 from oslo_config import cfg
 
 from syntribos.clients.http.client import SynHTTPClient
-import syntribos.extensions.rax_billing_system.models as models
+import syntribos.extensions.rax_payment_system.models as models
 from syntribos.extensions.rax_identity.client import get_token
 from syntribos.utils.memoize import memoize
 
@@ -28,17 +28,29 @@ CONF = cfg.CONF
 
 
 @memoize
-def list_paymentMethods():
-    headers = {'accept': 'application/json', 'x-auth-token': get_token()}
+def list_paymentMethods(ran=CONF.rax_payment_system.ran,
+                        serialize_format='json',
+                        deserialize_format='json'):
+    headers = {}
+    headers['accept'] = 'application/%s' % deserialize_format
+    headers['x-auth-token'] = get_token()
+
     endpoint = urlparse.urljoin(
         CONF.syntribos.endpoint,
-        "/v1/accounts/%s/methods" % CONF.rax_billing_system.ran)
+        "/v1/accounts/%s/methods" % ran)
+
     resp, _ = SynHTTPClient().request(
         "GET", endpoint, headers=headers, sanitize=True)
-    _methods = resp.json()['methods']['method']
+
+    if deserialize_format == 'json':
+        _methods = resp.json()['methods']['method']
+    else:
+        _methods = ET.fromstring(resp.data())
+
     paymentMethods = {}
     for m in _methods:
-        paymentMethods[m['id']] = models.PaymentMethod._dict_to_obj(m)
+        _method_obj = models.PaymentMethod.deserialize(m, deserialize_format)
+        paymentMethods[m['id']] = _method_obj
     return paymentMethods
 
 
@@ -54,7 +66,7 @@ def get_paymentmethod(methodId):
     headers = {'accept': 'application/json', 'x-auth-token': get_token()}
     endpoint = urlparse.urljoin(
         CONF.syntribos.endpoint,
-        "/v1/accounts/{0}/methods/{1}".format(CONF.rax_billing_system.ran,
+        "/v1/accounts/{0}/methods/{1}".format(CONF.rax_payment_system.ran,
                                               methodId))
     resp, _ = SynHTTPClient().request(
         "GET", endpoint, headers=headers, sanitize=True)
@@ -120,7 +132,7 @@ def list_payments():
                'content-type': 'application/json'}
     endpoint = urlparse.urljoin(
         CONF.syntribos.endpoint,
-        "/v1/accounts/%s/payments" % CONF.rax_billing_system.ran)
+        "/v1/accounts/%s/payments" % CONF.rax_payment_system.ran)
     resp, _ = SynHTTPClient().request(
         "GET", endpoint, headers=headers, sanitize=True)
     _payments = resp.json()['payments']['payment']
@@ -168,7 +180,7 @@ def list_refunds():
                'content-type': 'application/json'}
     endpoint = urlparse.urljoin(
         CONF.syntribos.endpoint,
-        "/v1/accounts/%s/refunds" % CONF.rax_billing_system.ran)
+        "/v1/accounts/%s/refunds" % CONF.rax_payment_system.ran)
     resp, _ = SynHTTPClient().request(
         "GET", endpoint, headers=headers, sanitize=True)
     _refunds = resp.json()['refunds']['refund']

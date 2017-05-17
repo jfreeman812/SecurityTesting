@@ -510,7 +510,7 @@ class RequestHelperMixin(object):
         identifier name so that the client only sees example.com/{123} when
         it sends the request
         """
-        return re.sub(r"{[\w]+:", "{", string)
+        return re.sub(r"(?!{urn:){[\w]+:", "{", string)
 
     def prepare_request(self):
         """Prepare a request for sending off

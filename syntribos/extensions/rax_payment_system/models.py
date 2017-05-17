@@ -13,7 +13,6 @@
 # limitations under the License.
 import json
 import logging
-import re
 import xml.etree.ElementTree as ET
 
 from oslo_config import cfg
@@ -23,10 +22,10 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 
-class BaseBillingSystemModel(object):
+class BasePaymentSystemModel(object):
 
     def __init__(self, kwargs):
-        super(BaseBillingSystemModel, self).__init__()
+        super(BasePaymentSystemModel, self).__init__()
         self._log = logging.getLogger(__name__)
         for k, v in kwargs.items():
             if k != "self" and not k.startswith("_"):
@@ -59,20 +58,6 @@ class BaseBillingSystemModel(object):
                     "Deserialization Error: Unable to deserialize the "
                     "following:\n{0}".format(serialized_str.decode(
                         encoding='UTF-8', errors='ignore')))
-
-    @classmethod
-    def _remove_xml_namespaces(cls, element):
-        """Prunes namespaces from XML element
-
-        :param element: element to be trimmed
-        :returns: element with namespaces trimmed
-        :rtype: :class:`xml.etree.ElementTree.Element`
-        """
-        for key, value in vars(cls._namespaces).items():
-            if key.startswith("__"):
-                continue
-            element = cls._remove_xml_etree_namespace(element, value)
-        return element
 
     @classmethod
     def _json_to_obj(cls, serialized_str):
@@ -227,7 +212,7 @@ class BaseBillingSystemModel(object):
                 return ET.Element(None)
 
 
-class PaymentMethod(BaseBillingSystemModel):
+class PaymentMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  methodId=None,
@@ -259,7 +244,7 @@ class PaymentMethod(BaseBillingSystemModel):
 
         _model = _model_class(data.get(_model_name))
         _avi = data.get('addressVerificationInformation')
-        return cls(methodId=cls._strip_urn_namespace(data.get('id')),
+        return cls(methodId=data.get('id'),
                    creationDate=data.get('creationDate'),
                    ran=data.get('ran'),
                    status=data.get('status'),
@@ -287,7 +272,7 @@ class PaymentMethod(BaseBillingSystemModel):
         return {"method": self._remove_empty_values(dic)}
 
 
-class PaymentCardMethod(BaseBillingSystemModel):
+class PaymentCardMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  cardVerificationNumber=None,
@@ -315,7 +300,7 @@ class PaymentCardMethod(BaseBillingSystemModel):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class ACHMethod(BaseBillingSystemModel):
+class ACHMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  accountNumber=None,
@@ -343,7 +328,7 @@ class ACHMethod(BaseBillingSystemModel):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class UKDebitMethod(BaseBillingSystemModel):
+class UKDebitMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  bankSortCode=None,
@@ -365,7 +350,7 @@ class UKDebitMethod(BaseBillingSystemModel):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class SEPAMethod(BaseBillingSystemModel):
+class SEPAMethod(BasePaymentSystemModel):
 
     def __init__(self,
                  bic=None,
@@ -387,7 +372,7 @@ class SEPAMethod(BaseBillingSystemModel):
         return {"papi:method": self._remove_empty_values(dic)}
 
 
-class MethodValidation(BaseBillingSystemModel):
+class MethodValidation(BasePaymentSystemModel):
 
     def __init__(self,
                  methodValidationId=None,
@@ -420,7 +405,7 @@ class MethodValidation(BaseBillingSystemModel):
         return {"papi:methodValidation": self._remove_empty_values(dic)}
 
 
-class MethodAssociation(BaseBillingSystemModel):
+class MethodAssociation(BasePaymentSystemModel):
     def __init__(self,
                  methodValidationId=None,
                  methodId=None,
@@ -440,7 +425,7 @@ class MethodAssociation(BaseBillingSystemModel):
         return {"methodAssociation": self._remove_empty_values(dic)}
 
 
-class Payment(BaseBillingSystemModel):
+class Payment(BasePaymentSystemModel):
 
     def __init__(self,
                  levelThreeOrderInformation=None,
@@ -483,7 +468,7 @@ class Payment(BaseBillingSystemModel):
         return {'papi:payment': self._remove_empty_values(dic)}
 
 
-class Void(BaseBillingSystemModel):
+class Void(BasePaymentSystemModel):
 
     def __init__(self,
                  voidId=None,
@@ -517,7 +502,7 @@ class Void(BaseBillingSystemModel):
         return {'papi:void': self._remove_empty_values(dic)}
 
 
-class Refund(BaseBillingSystemModel):
+class Refund(BasePaymentSystemModel):
 
     def __init__(self,
                  refundId=None,
@@ -533,9 +518,9 @@ class Refund(BaseBillingSystemModel):
 
     @classmethod
     def _dict_to_obj(cls, data):
-        _subid = cls._strip_urn_namespace(data.get('submissionId'))
+        _subid = data.get('submissionId')
         _gtr = data.get('gatewayTransactionReference')
-        _methid = cls._strip_urn_namespace(data.get('methodId'))
+        _methid = data.get('methodId')
         return cls(refundId=data.get('id'),
                    refundAmount=data.get('refundAmount'),
                    comments=data.get('comments'),

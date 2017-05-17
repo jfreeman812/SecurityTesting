@@ -23,6 +23,7 @@ LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
 
 
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
 XMLNS_ATOM = "http://www.w3.org/2005/Atom"
 XMLNS_NS1 = "http://payment.api.rackspacecloud.com/v1"
 XMLNS_NS2 = "http://payment.api.rackspacecloud.com/v1"
@@ -30,6 +31,8 @@ XMLNS_NS4 = "http://common.api.rackspacecloud.com/service-profile/v1.0"
 XMLNS_NS5 = "http://docs.openstack.org/common/api/v1.0"
 
 
+=======
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
 class BasePaymentSystemModel(object):
 
     def __init__(self, kwargs):
@@ -68,7 +71,12 @@ class BasePaymentSystemModel(object):
                         encoding='UTF-8', errors='ignore')))
 
     @classmethod
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
     def _json_to_obj(cls, data_dict):
+=======
+    def _json_to_obj(cls, serialized_str):
+        data_dict = json.loads(serialized_str, strict=False)
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
         return cls._dict_to_obj(data_dict)
 
     @classmethod
@@ -249,6 +257,7 @@ class PaymentMethod(BasePaymentSystemModel):
 
         _model = _model_class(data.get(_model_name))
         _avi = data.get('addressVerificationInformation')
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
         return cls(methodId=data.get('id') or data.get("@id"),
                    creationDate=data.get('creationDate') or
                    data.get('@creationDate'),
@@ -257,6 +266,14 @@ class PaymentMethod(BasePaymentSystemModel):
                    isDefault=data.get('isDefault') or data.get('@isDefault'),
                    modifiedDate=data.get('modifiedDate') or
                    data.get('@modifiedDate'),
+=======
+        return cls(methodId=data.get('id'),
+                   creationDate=data.get('creationDate'),
+                   ran=data.get('ran'),
+                   status=data.get('status'),
+                   isDefault=data.get('isDefault'),
+                   modifiedDate=data.get('modifiedDate'),
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
                    methodClass=_model,
                    methodClassName=_model_name,
                    addressVerificationInformation=_avi,
@@ -349,7 +366,10 @@ class ACHMethod(BasePaymentSystemModel):
         dic['ns2:method']['@xmlns:ns2'] = XMLNS_NS2
         return xmltodict.unparse(dic)
 
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
 
+=======
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
 class UKDebitMethod(BasePaymentSystemModel):
 
     def __init__(self,
@@ -452,7 +472,10 @@ class MethodValidation(BasePaymentSystemModel):
 
         return xmltodict.unparse(dic)
 
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
 
+=======
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
 class MethodAssociation(BasePaymentSystemModel):
     def __init__(self,
                  methodValidationId=None,
@@ -569,7 +592,10 @@ class Void(BasePaymentSystemModel):
 
         return xmltodict.unparse(dic)
 
+<<<<<<< HEAD:syntribos/extensions/rax_payment_system/models.py
 
+=======
+>>>>>>> 4367bbe3ab5531a5e62170f7ab876272498bf56b:syntribos/extensions/rax_payment_system/models.py
 class Refund(BasePaymentSystemModel):
 
     def __init__(self,

@@ -79,9 +79,7 @@ class BasePaymentSystemModel(object):
         return json.dumps(self._obj_to_dict())
 
     def _obj_to_xml(self):
-        element = self._obj_to_xml_ele()
-        element.attrib["xmlns"] = self._namespaces.XMLNS
-        return ET.tostring(element)
+        raise NotImplementedError
 
     # These next two functions must be defined by the child classes before
     # serializing

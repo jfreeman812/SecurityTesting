@@ -1,0 +1,12 @@
+PUT /v2/accounts/{|ran|}/discounts/{|discountId|}/discountCancellation HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "discountCancellation": {
+    "cancellationReason": "just a simple reason",
+    "retainSites": true,
+    "cancellationCharge": "200.0"
+  }
+}

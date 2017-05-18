@@ -1,0 +1,13 @@
+PUT /v2/accounts/{|ran|}/billingAddress HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "billingAddress": {
+    "zip": "78154",
+    "state": "TX",
+    "addressLine1": "asdf",
+    "country": "US",
+    "city": "Chennai"
+  }

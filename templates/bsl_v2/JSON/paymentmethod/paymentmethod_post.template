@@ -1,0 +1,17 @@
+POST /v2/accounts/{|ran|}/methods HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "paymentMethodInfo": {
+    "methodId": "urn:uuid:fa093563-73db-4fe4-8f3a-def53dde8f5d",
+    "electronicCheck": {
+      "accountNumber": "0023401234",
+      "accountType": "PERSONAL_CHECKING",
+      "achPaymentType": "WEB",
+      "routingNumber": "03131958",
+      "accountHolderName": "Rich Cheque"
+    }
+  }
+}

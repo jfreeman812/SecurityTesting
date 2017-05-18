@@ -1,0 +1,11 @@
+POST /v2/accounts/{ran}/purchaseOrders HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "purchaseOrder": {
+    "startDate": "2002-05-29T19:00:00.000-05:00",
+    "poNumber": "1234567"
+  }
+}

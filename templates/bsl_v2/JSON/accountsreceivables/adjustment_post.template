@@ -1,0 +1,13 @@
+POST /v2/accounts/{|ran|}/adjustments/{|adjustmentId|} HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "adjustment": {
+    "amount": "22.65",
+    "reasonCode": "Uptime SLA",
+    "type": "CREDIT",
+    "comments": "Uptime SLA breached on 06\\21\\2013"
+  }
+}

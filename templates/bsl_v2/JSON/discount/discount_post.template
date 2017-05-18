@@ -1,0 +1,17 @@
+POST /v2/accounts/{|ran|}/discounts HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "commitDiscount": {
+    "commitGridId": "G001",
+    "percent": "12.0",
+    "geo": "USA",
+    "commitMonths": 12,
+    "commitPaymentAmount": "88000",
+    "commitUsageAmountPerMonth": "100000",
+    "enrollmentDate": "2002-05-30T04:30:10.000-05:00",
+    "isPrePayOpted": true
+  }
+}

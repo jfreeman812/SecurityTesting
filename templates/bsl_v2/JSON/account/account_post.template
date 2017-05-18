@@ -1,0 +1,118 @@
+POST /v2/accounts HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "billingAccount": {
+    "lineOfBusiness": "US_CLOUD",
+    "link": [
+      {
+        "rel": "self",
+        "href": "http://billing.api.rackspacecloud.com/v2/123456"
+      },
+      {
+        "rel": "contacts",
+        "href": "http://billing.api.rackspacecloud.com/v2/123456/contactInfo"
+      }
+    ],
+    "currency": "USD",
+    "externalBillingSystemInfo": {
+      "externalAccountNumber": "EBS00001",
+      "externalBillingSystemName": "USCLOUD",
+      "invoicedInExternalBillingSystem": true
+    },
+    "accountNumber": "A123456",
+    "signupDate": "2001-10-26T16:32:52.000-05:00",
+    "contactInfo": {
+      "billingContact": [
+        {
+          "lastName": "Sawyer",
+          "email": "tom@sawyer.com",
+          "address": {
+            "zip": "78154",
+            "state": "TX",
+            "addressLine1": "asdf",
+            "country": "US",
+            "city": "Chennai"
+          },
+          "phoneNumbers": {
+            "phoneNumber": [
+              {
+                "number": "1234",
+                "type": "HOME"
+              }
+            ]
+          },
+          "firstName": "Tom"
+        }
+      ],
+      "primaryContact": [
+        {
+          "lastName": "Sawyer",
+          "email": "tim@sawyer.com",
+          "address": {
+            "zip": "78154",
+            "state": "TX",
+            "addressLine1": "asdf",
+            "country": "US",
+            "city": "Chennai"
+          },
+          "phoneNumbers": {
+            "phoneNumber": [
+              {
+                "number": "1234",
+                "type": "HOME"
+              }
+            ]
+          },
+          "firstName": "Tim"
+        }
+      ]
+    },
+    "name": "amazon",
+    "billInfo": {
+      "billingDayOfMonth": 15
+    },
+    "supportInfo": {
+      "businessUnit": "10002",
+      "revenueTeamNumber": 10001,
+      "serviceLevel": "MANAGED",
+      "serviceType": "SYSOPS"
+    },
+    "primaryAddress": {
+      "zip": "78154",
+      "state": "TX",
+      "addressLine1": "asdf",
+      "country": "US",
+      "city": "Chennai"
+    },
+    "contractEntity": "CONTRACT_US",
+    "paymentInfo": {
+      "paymentTermsType": "Default",
+      "paymentType": "METHOD",
+      "paymentDetail": "urn:uuid:696c40a0-c3e7-11e2-8b8b-0800200c9a66",
+      "notificationOption": "OPT_IN",
+      "paymentTerms": "NET_30"
+    },
+    "billingAddress": {
+      "zip": "78154",
+      "state": "TX",
+      "addressLine1": "asdf",
+      "country": "US",
+      "city": "Chennai"
+    },
+    "signUpInfo": {
+      "signUpData": [
+        {
+          "dataType": "PAYMENT_METHOD_VALIDATION",
+          "dataDetail": "urn:uuid:d35d7160-c3f0-11e2-8b8b-0800200c9a66"
+        },
+        {
+          "dataType": "FRAUD_SCORE",
+          "dataDetail": "723"
+        }
+      ]
+    }
+  }
+}

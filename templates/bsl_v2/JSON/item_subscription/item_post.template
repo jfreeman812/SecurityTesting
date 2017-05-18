@@ -1,0 +1,31 @@
+POST /v2/accounts/{|ran|}/item HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "item": {
+    "offeringCode": "DNS",
+    "tenure": 2,
+    "attribute": [
+      {
+        "name": "domainName",
+        "value": "www.yahoo.com"
+      },
+      {
+        "name": "domainAction",
+        "value": "REGISTRATION"
+      },
+      {
+        "name": "autoRenew",
+        "value": "true"
+      },
+      {
+        "name": "expirationDate",
+        "value": "2002-05-30T09:30:10Z"
+      }
+    ],
+    "effectiveDate": "2002-05-30T04:30:10.000-05:00",
+    "itemCode": "DNSPURCHASE"
+  }
+}

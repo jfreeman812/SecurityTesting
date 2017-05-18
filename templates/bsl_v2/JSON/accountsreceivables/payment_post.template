@@ -1,0 +1,12 @@
+POST /v2/accounts/{ran}/payments HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+  "payment": {
+    "amount": "22.65",
+    "comments": "balance adjustment payment",
+    "methodId": "urn:uuid:fa093563-73db-4fe4-8f3a-def53dde8f5d"
+  }
+}

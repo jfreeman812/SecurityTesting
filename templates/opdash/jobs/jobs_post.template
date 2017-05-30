@@ -1,0 +1,24 @@
+POST /jobs HTTP/1.1
+Accept: application/json
+Content-type: application/json
+X-Auth-Token: |token|
+X-Tenant-Id: |tenantId|
+
+{
+   "resources": {
+      "databases": [
+         {
+            "source": {
+               "region": "DFW",
+               "id": "723e8aa6-b3f1-43e9-a669-d35fbe80762e",
+               "type": "SATA"
+            },
+            "destination": {
+               "region": "us-east-1",
+               "zone": "us-east-1a",
+               "db_instance_class": "db.m3.medium"
+            }
+         }
+      ]
+   }
+}

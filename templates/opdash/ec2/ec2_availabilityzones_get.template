@@ -1,0 +1,3 @@
+GET /ec2/availability_zones/{|aws_region|} HTTP/1.1
+Accept: application/json
+X-Auth-Token: |token|

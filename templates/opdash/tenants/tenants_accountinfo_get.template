@@ -1,0 +1,4 @@
+GET /tenants/get_account_info HTTP/1.1
+X-Auth-Token: |token|
+X-Tenant-Id: |tenantId|
+

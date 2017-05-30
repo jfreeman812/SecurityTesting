@@ -1,0 +1,3 @@
+POST /tenants/add_user_tenant HTTP/1.1
+Accept: application/json
+X-Auth-Token: |rax_token|

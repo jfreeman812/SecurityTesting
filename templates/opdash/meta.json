@@ -1,0 +1,11 @@
+{
+    "token": {"type":"function", "val":"syntribos.extensions.rax_identity.client:get_token"},
+    "tenantId": {"type":"config", "val":"user.tenant_id"},
+    "rax_region": {"val": "dfw"},
+    "uuid": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"},
+    "flavor": {"val": "2"},
+    "aws_region": {"val": "us-east-1"},
+    "aws_instance_type": {"val": "t2.nano"},
+    "rax_token": {"val": ""},
+    "user_id": {"val": ""}
+}

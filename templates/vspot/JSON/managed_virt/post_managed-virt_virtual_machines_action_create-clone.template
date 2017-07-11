@@ -1,0 +1,8 @@
+POST /managed-virt/{|accountId|}/virtual-machines/{|deviceId|}/actions/create-clone HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+    "TODO": "Design work outstanding",
+}

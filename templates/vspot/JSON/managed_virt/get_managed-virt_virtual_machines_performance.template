@@ -1,4 +1,0 @@
-GET /managed-virt/{|accountId|}/virtual-machines/{|deviceId|}/performance-data HTTP/1.1
-Accept: application/json
-content-type: application/json
-x-auth-token: |token|

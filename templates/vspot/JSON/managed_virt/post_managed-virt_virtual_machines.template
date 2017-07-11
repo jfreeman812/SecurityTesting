@@ -1,8 +1,0 @@
-POST /managed-virt/{|accountId|}/virtual-machines HTTP/1.1
-Accept: application/json
-content-type: application/json
-x-auth-token: |token|
-
-{
-    "TODO": "Design work outstanding"
-}

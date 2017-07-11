@@ -1,5 +1,0 @@
-GET /v1/supportedmethods HTTP/1.1
-Accept: application/json
-content-type: application/json
-x-auth-token: |token|
-x-rax-accountnumber: |ran|

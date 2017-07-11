@@ -1,9 +1,0 @@
-{
-    "token": {"type":"function", "val":"syntribos.extensions.rax_identity.client:get_token"},
-    "ran": {"type":"config", "val":"rax_payment_system.ran"},
-    "methodId": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"},
-    "methodValidationId": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"},
-    "paymentId": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"},
-    "voidId": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"},
-    "refundId": {"type":"function", "val":"syntribos.extensions.random_data.client:get_uuid"}
-}

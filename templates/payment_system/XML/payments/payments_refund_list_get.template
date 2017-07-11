@@ -1,4 +1,0 @@
-GET /v1/accounts/{|ran|}/refunds HTTP/1.1
-Accept: application/xml
-content-type: application/xml
-x-auth-token: |token|

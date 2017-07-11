@@ -1,0 +1,9 @@
+POST /managed-virt/{|accountId|}/virtual-machines/{|deviceId|}/actions/reimage HTTP/1.1
+Accept: application/json
+content-type: application/json
+x-auth-token: |token|
+
+{
+    "instructions": "instructions that are entered into the text box in portal"
+    "requesterId": 123
+}
